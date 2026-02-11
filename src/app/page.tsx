@@ -4,8 +4,9 @@ import NewsCard from "../../components/NewsCards";
 export default async function HomePage() {
   const news = [
     { id: 1, title: "something new", description: "long paragraph" },
+    { id: 2, title: "news ", description: "new paragraph" },
+    { id: 3, title: "news ", description: "new paragraph" },
   ];
-
   return (
     <main className="max-w-5xl mx-auto p-6">
       <h1 className="text-3xl font-bold mb-6">Latest News</h1>
