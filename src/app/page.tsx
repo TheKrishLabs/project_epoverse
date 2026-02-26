@@ -1,4 +1,7 @@
 //import { prisma } from "@/lib/prisma";
+import BreakingBar from "../../components/Hero/BreakingBar";
+import HeroSection from "../../components/Hero/HeroSection";
+import Sidebar from "../../components/Hero/Sidebar";
 import NewsCard from "../../components/NewsCards";
 
 export default async function HomePage() {
@@ -8,17 +11,17 @@ export default async function HomePage() {
     { id: 3, title: "news ", description: "new paragraph" },
   ];
   return (
-    <main className="max-w-5xl mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-6">Latest News</h1>
+    <main className="max-w-[1300px] mx-auto px-4 py-8">
+      <BreakingBar />
 
-      <div className="grid gap-6">
-        {news.map((item) => (
-          <NewsCard
-            key={item.id}
-            title={item.title}
-            description={item.description}
-          />
-        ))}
+      <div className="grid grid-cols-12 gap-8">
+        <div className="col-span-9">
+          <HeroSection />
+        </div>
+
+        <div className="col-span-3">
+          <Sidebar />
+        </div>
       </div>
     </main>
   );
