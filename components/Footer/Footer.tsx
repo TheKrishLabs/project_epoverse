@@ -33,7 +33,7 @@ const Footer: React.FC = () => {
               (Icon, index: number) => (
                 <div
                   key={index}
-                  className="w-10 h-10 flex items-center justify-center border border-gray-500 rounded-full hover:bg-red-500 hover:border-red-500 transition cursor-pointer"
+                  className="w-10 h-10 flex items-center justify-center border-2 border-gray-500 rounded-full hover:border-sky-600 transition cursor-pointer"
                 >
                   <Icon />
                 </div>
@@ -73,20 +73,20 @@ const Footer: React.FC = () => {
             <h3 className="text-xl font-semibold">Categories</h3>
 
             <div className="grid grid-cols-2 gap-3 text-gray-300 text-sm">
-              <p>Health</p>
-              <p>International</p>
-              <p>Investing</p>
-              <p>Finance</p>
-              <p>Technology</p>
-              <p>Sports</p>
-              <p>Movies</p>
+              <p className="hover:text-rose-500 transition-all duration-300 hover:translate-x-1 cursor-pointer">Health</p>
+              <p className="hover:text-rose-500 transition-all duration-300 hover:translate-x-1 cursor-pointer">International</p>
+              <p className="hover:text-rose-500 transition-all duration-300 hover:translate-x-1 cursor-pointer">Investing</p>
+              <p className="hover:text-rose-500 transition-all duration-300 hover:translate-x-1 cursor-pointer">Finance</p>
+              <p className="hover:text-rose-500 transition-all duration-300 hover:translate-x-1 cursor-pointer">Technology</p>
+              <p className="hover:text-rose-500 transition-all duration-300 hover:translate-x-1 cursor-pointer">Sports</p>
+              <p className="hover:text-rose-500 transition-all duration-300 hover:translate-x-1 cursor-pointer">Movies</p>
             </div>
           </div>
 
           {/* Company */}
           <div className="space-y-6 md:border-r md:border-gray-700 md:px-8">
             <h3 className="text-xl font-semibold">Company</h3>
-            <p className="text-gray-300 text-sm">Business</p>
+            <p className="text-gray-300 text-sm hover:text-rose-500 transition-all duration-300 hover:translate-x-1 cursor-pointer">Business</p>
           </div>
 
           {/* Newsletter */}

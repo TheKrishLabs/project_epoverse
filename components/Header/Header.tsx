@@ -10,54 +10,78 @@ import {
   FaGlobe,
   FaClock,
 } from "react-icons/fa";
+import LoginModal from "../Login/LoginModal";
+import Link from "next/link";
+import { ArrowBigRight } from "lucide-react";
+import { IoIosArrowForward } from "react-icons/io";
 
-const Header:React.FC = () => {
-    const [isLangOpen, setIsLangOpen] = useState(false);
-const [selectedLang, setSelectedLang] = useState("English");
-const dropdownRef=useRef<HTMLDivElement>(null)
+const Header: React.FC = () => {
+  const [isLangOpen, setIsLangOpen] = useState(false);
+  const [selectedLang, setSelectedLang] = useState("English");
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
-// Close dropdown when clicking outside
-useEffect(()=>{
-    const handleClickOuside=(event:MouseEvent)=>{
-        if(dropdownRef.current && !dropdownRef.current.contains(event.target as Node)){
-            setIsLangOpen(false)
-        }
-        
-    }
-    document.addEventListener('mousedown',handleClickOuside)
-        return()=>{
-            document.removeEventListener('mousedown',handleClickOuside)
-        }
-},[])
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOuside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsLangOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOuside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOuside);
+    };
+  }, []);
 
-const handleLandSelected=(lang:string)=>{
-    setSelectedLang(lang)
-    setIsLangOpen(false)
-}
+  const today: Date = new Date();
+
+  const formattedDate: string = today.toLocaleDateString("en-GB", {
+    weekday: "long",
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+  });
+
+  const handleLandSelected = (lang: string) => {
+    setSelectedLang(lang);
+    setIsLangOpen(false);
+  };
   return (
     <>
-
       {/* ================= TOP BAR ================= */}
       <div className="bg-gray-100 border-b text-sm">
         <div className="w-full flex items-center justify-between py-2 px-12">
-
           {/* Left - Date */}
           <div className="flex items-center gap-2 text-gray-600">
             <FaClock className="text-gray-500 text-xs" />
-            <span>Thursday, 26 February 2026</span>
+            <span>{formattedDate}</span>
           </div>
 
           {/* Right */}
           <div className="flex items-center gap-4 text-gray-700">
-            <a href="#" className="hover:text-black">Login</a>
+            <button
+              onClick={() => setIsLoginOpen(true)}
+              className="hover:text-black"
+            >
+              Login
+            </button>
             <span>|</span>
-            <a href="#" className="hover:text-black">Registration</a>
+            <Link href="/registration" className="hover:text-black">
+              Registration
+            </Link>
 
             {/* Theme Icon */}
-            <FaSun size={20} className="text-orange-500 cursor-pointer shadow rounded-xl" />
+            <FaSun
+              size={20}
+              className="text-orange-500 cursor-pointer shadow rounded-xl"
+            />
 
             {/* Language */}
-            
+
             <div className="relative" ref={dropdownRef}>
               <div
                 onClick={() => setIsLangOpen(!isLangOpen)}
@@ -107,12 +131,14 @@ const handleLandSelected=(lang:string)=>{
       {/* ================= LOGO + AD SECTION ================= */}
       <div className="bg-white">
         <div className="w-full flex items-center justify-between py-3 px-10">
-
           {/* Logo */}
-          <div className="text-6xl font-bold">
+          <Link
+            href="/"
+            className="text-4xl font-bold flex items-center transition-all duration-300 hover:scale-50"
+          >
             <span className="text-black">Epo</span>
             <span className="text-red-600">Verse.</span>
-          </div>
+          </Link>
 
           {/* Ad Banner */}
           <div className="bg-gray-300 w-[771px] h-[90px] flex items-center justify-center text-gray-500 text-2xl font-semibold">
@@ -124,7 +150,6 @@ const handleLandSelected=(lang:string)=>{
       {/* ================= NAVBAR ================= */}
       <div className="sticky top-0 z-50 bg-black">
         <div className="max-w-[1200px] mx-auto flex items-center justify-between px-4">
-
           {/* Menu */}
           <ul className="flex items-center gap-6 text-white text-sm font-medium py-4">
             {[
@@ -137,10 +162,13 @@ const handleLandSelected=(lang:string)=>{
               "HEALTH",
               "TECHNOLOGY",
               "MORE",
-            ].map((item, index:number) => (
-              <li key={index} className="flex items-center gap-2 cursor-pointer hover:text-red-500">
+            ].map((item, index: number) => (
+              <li
+                key={index}
+                className="flex items-center gap-2 cursor-pointer hover:text-red-500"
+              >
                 {item}
-                <span className="text-gray-400">›</span>
+                <span className="text-gray-400"><IoIosArrowForward /></span>
               </li>
             ))}
           </ul>
@@ -151,6 +179,7 @@ const handleLandSelected=(lang:string)=>{
           </div>
         </div>
       </div>
+      <LoginModal isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} />
     </>
   );
 };
