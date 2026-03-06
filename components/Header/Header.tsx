@@ -12,6 +12,7 @@ import {
 } from "react-icons/fa";
 import LoginModal from "../Login/LoginModal";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 import { IoIosArrowForward } from "react-icons/io";
 import { fetchArticlesByCategoryId } from "@/lib/categoriesById";
@@ -28,6 +29,7 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ categories }) => {
+  const router = useRouter();
   const [isLangOpen, setIsLangOpen] = useState(false);
   const [selectedLang, setSelectedLang] = useState("English");
   const [isLoginOpen, setIsLoginOpen] = useState(false);
@@ -72,6 +74,10 @@ const Header: React.FC<HeaderProps> = ({ categories }) => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  const handleCategoryClick = (id: string) => {
+  router.push(`/category/${id}`);
+};
 
   // Date
   const today: Date = new Date();
@@ -237,6 +243,7 @@ const Header: React.FC<HeaderProps> = ({ categories }) => {
               <li
                 key={cat._id}
                 onMouseEnter={() => handleHover(cat._id)}
+                onClick={() => handleCategoryClick(cat._id)}
                 className="relative group cursor-pointer"
               >
                 <div className="flex items-center gap-1 group-hover:text-red-500">
