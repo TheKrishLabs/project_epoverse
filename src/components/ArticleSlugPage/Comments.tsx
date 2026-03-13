@@ -7,8 +7,9 @@ import { useState, useEffect } from "react";
 export default function Comments({ articleId }: { articleId: string }) {
   const router=useRouter()
   const [comments, setComments] = useState<any[]>([]);
-  const [name, setName] = useState("");
-  const [message, setMessage] = useState("");
+  
+  const [content, setContent] = useState("");
+  const [loading, setLoading] = useState(false);
 
 //   useEffect(() => {
 //   const fetchComments = async () => {
@@ -29,7 +30,7 @@ const submitComment = async (e: any) => {
     router.push("/login");
     return;
   }
-  const content=message
+  
 
   try {
     const res = await privateApi.post(`/comments/article/${articleId}`, {
@@ -40,8 +41,8 @@ const submitComment = async (e: any) => {
 
     setComments((prev) => [newComment, ...prev]);
 
-    setName("");
-    setMessage("");
+   
+    setContent("");
 
     alert("Comment posted successfully!");
   } catch (error) {
@@ -52,30 +53,25 @@ const submitComment = async (e: any) => {
 
   return (
     <div className="mt-16">
-      <h2 className="text-2xl font-bold mb-6">Comments</h2>
 
-      {/* Comment Form */}
-      <form  className="space-y-4 mb-10">
-        <input
-          className="border w-full p-3 rounded"
-          placeholder="Your name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-        />
+      <h3 className="text-red-500 font-bold mb-4">COMMENTS</h3>
 
-        <textarea
-          className="border w-full p-3 rounded"
-          placeholder="Write a comment..."
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          required
-        />
+      <textarea
+        placeholder="Share your thoughts..."
+        className="w-full border rounded-lg p-4 h-28 mb-4"
+        value={content}
+        onChange={(e) => setContent(e.target.value)}
+      />
 
-        <button className="bg-red-500 text-white px-6 py-2 rounded" onClick={submitComment}>
-          Post Comment
-        </button>
-      </form>
+      <button
+        onClick={submitComment}
+        disabled={loading}
+        className="bg-black text-white px-6 py-3 rounded-lg"
+      >
+        {loading ? "Posting..." : "POST COMMENTS"}
+      </button>
+
+    
 
       {/* Comment List
       <div className="space-y-6">

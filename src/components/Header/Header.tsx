@@ -19,6 +19,7 @@ import MegaContent from "./MegaContent";
 import { fetchArticlesByCategoryId } from "@/services/articleService";
 import { Article } from "@/types/article";
 import LoginModal from "../../../components/Login/LoginModal";
+import { LogOut } from "lucide-react";
 
 interface Category {
   _id: string;
@@ -121,6 +122,16 @@ const Header: React.FC<HeaderProps> = ({ categories = [] }) => {
       }
     }, 200);
   };
+  //LogOut User 
+
+  const logoutUser=()=>{
+    const token=localStorage.getItem('token')
+    console.log(token)
+    if(token){
+      alert('Are you sure want to logout')
+      localStorage.removeItem('token')
+    }
+  }
   return (
     <>
       {/* ================= TOP BAR ================= */}
@@ -194,6 +205,11 @@ const Header: React.FC<HeaderProps> = ({ categories = [] }) => {
               <div className="bg-red-600 text-white p-2 rounded-full text-xs cursor-pointer">
                 <FaYoutube />
               </div>
+            </div>
+
+            {/* Logout */}
+            <div className="ml-10">
+              <button onClick={logoutUser}><LogOut/></button>
             </div>
           </div>
         </div>
