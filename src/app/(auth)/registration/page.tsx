@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { FaFacebookF } from "react-icons/fa";
+import { FaFacebookF, FaEye, FaEyeSlash } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import { useRouter } from "next/navigation";
+import { registerUser } from "@/services/register";
 
 export default function Registration() {
   const router = useRouter();
@@ -19,15 +20,37 @@ export default function Registration() {
   const [errors, setErrors] = useState<any>({});
   const [loading, setLoading] = useState(false);
 
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const validate = () => {
     let newErrors: any = {};
 
-    if (!form.username) newErrors.username = "Username is required";
-    if (!form.email) newErrors.email = "Email is required";
-    if (!form.password) newErrors.password = "Password is required";
-    if (form.password !== form.confirmPassword)
+    if (!form.username.trim()) {
+      newErrors.username = "Username is required";
+    }
+
+    if (!form.email) {
+      newErrors.email = "Email is required";
+    } else if (!/\S+@\S+\.\S+/.test(form.email)) {
+      newErrors.email = "Enter valid email";
+    }
+
+    if (!form.password) {
+      newErrors.password = "Password is required";
+    } else if (form.password.length < 6) {
+      newErrors.password = "Password must be at least 6 characters";
+    }
+
+    if (!form.confirmPassword) {
+      newErrors.confirmPassword = "Confirm password required";
+    } else if (form.password !== form.confirmPassword) {
       newErrors.confirmPassword = "Passwords do not match";
-    if (!form.agree) newErrors.agree = "You must accept terms";
+    }
+
+    if (!form.agree) {
+      newErrors.agree = "You must accept Terms & Conditions";
+    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -35,125 +58,158 @@ export default function Registration() {
 
   const handleChange = (e: any) => {
     const { name, value, type, checked } = e.target;
+
     setForm({
       ...form,
       [name]: type === "checkbox" ? checked : value,
     });
+
+    setErrors({
+      ...errors,
+      [name]: "",
+    });
   };
 
-  //   const handleSubmit = async () => {
-  //     if (!validate()) return;
+  const handleSubmit = async () => {
+    if (!validate()) return;
 
-  //     try {
-  //       setLoading(true);
+    try {
+      setLoading(true);
 
-  //       const res = await fetch(
-  //         "https://project-epoverse-backend.onrender.com/api/auth/register",
-  //         {
-  //           method: "POST",
-  //           headers: { "Content-Type": "application/json" },
-  //           body: JSON.stringify({
-  //             username: form.username,
-  //             email: form.email,
-  //             password: form.password,
-  //           }),
-  //         }
-  //       );
+      await registerUser({
+        fullName: form.username,
+        email: form.email,
+        password: form.password,
+        confirmPassword: form.confirmPassword,
+      });
 
-  //       const data = await res.json();
-
-  //       if (!res.ok) {
-  //         alert(data.message || "Registration failed");
-  //         return;
-  //       }
-
-  //       alert("Registration successful!");
-  //       router.push("/");
-  //     } catch (err) {
-  //       alert("Something went wrong");
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
+      alert("Registration successful!");
+      router.push("/login");
+    } catch (err: any) {
+      alert(err?.response?.data?.message || "Registration failed");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="bg-white w-full max-w-md rounded-lg shadow-lg p-8">
       <h2 className="text-2xl font-semibold text-center mb-6">Registration</h2>
 
-      {/* Facebook */}
+      {/* Social Login */}
       <button className="flex items-center justify-center gap-2 w-full bg-blue-600 text-white py-2 rounded mb-3">
         <FaFacebookF />
         Connect with Facebook
       </button>
 
-      {/* Google */}
       <button className="flex items-center justify-center gap-2 w-full bg-gray-100 py-2 rounded mb-4 border">
         <FcGoogle size={20} />
         Connect with Google
       </button>
 
-      <p className="text-base text- mb-6 underline decoration-indigo-500/30 font-semibold text-gray-400 cursor-pointer">
+      <p className="text-base mb-6 underline decoration-indigo-500/30 font-semibold text-gray-400 cursor-pointer">
         Or login with email
       </p>
 
-      {/* Inputs */}
-      <form className="space-y-5">
+      <form className="space-y-4">
+
+        {/* Username */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Username
+          <label className="block text-sm font-medium mb-1">
+            Fullname
           </label>
           <input
             name="username"
-            placeholder="User name"
+            placeholder="Enter fullname"
             value={form.username}
             onChange={handleChange}
-            className="w-full border rounded px-3 py-2 mb-3"
+            className="w-full border rounded px-3 py-2"
           />
+          {errors.username && (
+            <p className="text-red-500 text-sm">{errors.username}</p>
+          )}
         </div>
+
+        {/* Email */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium mb-1">
             Email
           </label>
           <input
             name="email"
             type="email"
-            placeholder="Enter your email"
+            placeholder="Enter email"
             value={form.email}
             onChange={handleChange}
-            className="w-full border rounded px-3 py-2 mb-3"
+            className="w-full border rounded px-3 py-2"
           />
+          {errors.email && (
+            <p className="text-red-500 text-sm">{errors.email}</p>
+          )}
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+        {/* Password */}
+        <div className="relative">
+          <label className="block text-sm font-medium mb-1">
             Password
           </label>
+
           <input
             name="password"
-            type="password"
-            placeholder="Password"
+            type={showPassword ? "text" : "password"}
+            placeholder="Enter password"
             value={form.password}
             onChange={handleChange}
-            className="w-full border rounded px-3 py-2 mb-3"
+            className="w-full border rounded px-3 py-2"
           />
+
+          <span
+            className="absolute right-3 top-9 cursor-pointer"
+            onClick={() => setShowPassword(!showPassword)}
+          >
+            {showPassword ? <FaEyeSlash /> : <FaEye />}
+          </span>
+
+          {errors.password && (
+            <p className="text-red-500 text-sm">{errors.password}</p>
+          )}
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Conform Password
+        {/* Confirm Password */}
+        <div className="relative">
+          <label className="block text-sm font-medium mb-1">
+            Confirm Password
           </label>
+
           <input
             name="confirmPassword"
-            type="password"
+            type={showConfirmPassword ? "text" : "password"}
             placeholder="Confirm password"
             value={form.confirmPassword}
             onChange={handleChange}
-            className="w-full border rounded px-3 py-2 mb-3"
+            className="w-full border rounded px-3 py-2"
           />
+
+          <span
+            className="absolute right-3 top-9 cursor-pointer"
+            onClick={() =>
+              setShowConfirmPassword(!showConfirmPassword)
+            }
+          >
+            {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+          </span>
+
+          {errors.confirmPassword && (
+            <p className="text-red-500 text-sm">
+              {errors.confirmPassword}
+            </p>
+          )}
         </div>
+
       </form>
 
-      <label className="flex items-center gap-2 text-sm mb-4">
+      {/* Terms */}
+      <label className="flex items-center gap-2 text-sm mt-3">
         <input
           type="checkbox"
           name="agree"
@@ -163,11 +219,16 @@ export default function Registration() {
         I agree to Terms & Conditions
       </label>
 
+      {errors.agree && (
+        <p className="text-red-500 text-sm">{errors.agree}</p>
+      )}
+
       <button
+        onClick={handleSubmit}
         disabled={loading}
-        className="w-full bg-red-500 text-white py-2 rounded"
+        className="w-full bg-red-500 text-white py-2 rounded mt-4"
       >
-        {loading ? "Registering..." : "Registration"}
+        {loading ? "Registering..." : "Register"}
       </button>
     </div>
   );

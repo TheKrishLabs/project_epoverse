@@ -10,7 +10,7 @@ import {
   FaGlobe,
   FaClock,
 } from "react-icons/fa";
-import LoginModal from "../Login/LoginModal";
+
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { IoIosArrowForward } from "react-icons/io";
@@ -18,6 +18,7 @@ import SkeletonLoader from "./Skelton";
 import MegaContent from "./MegaContent";
 import { fetchArticlesByCategoryId } from "@/services/articleService";
 import { Article } from "@/types/article";
+import LoginModal from "../../../components/Login/LoginModal";
 
 interface Category {
   _id: string;

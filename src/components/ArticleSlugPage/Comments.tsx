@@ -1,42 +1,61 @@
 "use client";
 
+import { privateApi } from "@/lib/axios";
+import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 
 export default function Comments({ articleId }: { articleId: string }) {
+  const router=useRouter()
   const [comments, setComments] = useState<any[]>([]);
   const [name, setName] = useState("");
   const [message, setMessage] = useState("");
 
-  useEffect(() => {
-    fetch(`/api/comments?articleId=${articleId}`)
-      .then((res) => res.json())
-      .then((data) => setComments(data));
-  }, [articleId]);
+//   useEffect(() => {
+//   const fetchComments = async () => {
+//     const res = await publicApi.get(`/comments?articleId=${articleId}`);
+//     setComments(res.data);
+//   };
 
-  const submitComment = async (e: any) => {
-    e.preventDefault();
+//   fetchComments();
+// }, [articleId]);
 
-    const res = await fetch("/api/comments", {
-      method: "POST",
-      body: JSON.stringify({ name, message, articleId }),
-      headers: {
-        "Content-Type": "application/json",
-      },
+const submitComment = async (e: any) => {
+  e.preventDefault();
+
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    alert("Please login to post a comment");
+    router.push("/login");
+    return;
+  }
+  const content=message
+
+  try {
+    const res = await privateApi.post(`/comments/article/${articleId}`, {
+      content
     });
 
-    const newComment = await res.json();
+    const newComment = res.data;
 
-    setComments([newComment, ...comments]);
+    setComments((prev) => [newComment, ...prev]);
+
     setName("");
     setMessage("");
-  };
+
+    alert("Comment posted successfully!");
+  } catch (error) {
+    console.error(error);
+    alert("Failed to post comment. Please try again.");
+  }
+};
 
   return (
     <div className="mt-16">
       <h2 className="text-2xl font-bold mb-6">Comments</h2>
 
       {/* Comment Form */}
-      <form onSubmit={submitComment} className="space-y-4 mb-10">
+      <form  className="space-y-4 mb-10">
         <input
           className="border w-full p-3 rounded"
           placeholder="Your name"
@@ -53,12 +72,12 @@ export default function Comments({ articleId }: { articleId: string }) {
           required
         />
 
-        <button className="bg-red-500 text-white px-6 py-2 rounded">
+        <button className="bg-red-500 text-white px-6 py-2 rounded" onClick={submitComment}>
           Post Comment
         </button>
       </form>
 
-      {/* Comment List */}
+      {/* Comment List
       <div className="space-y-6">
         {comments.map((c) => (
           <div key={c._id} className="border-b pb-4">
@@ -66,7 +85,7 @@ export default function Comments({ articleId }: { articleId: string }) {
             <p className="text-gray-700">{c.message}</p>
           </div>
         ))}
-      </div>
+      </div> */}
     </div>
   );
 }
