@@ -1,6 +1,5 @@
-"use client"
+"use client";
 import Stories from "@/components/ArticleSlugPage/Stories";
-
 import { getArticles } from "@/services/articleService";
 import { Article } from "@/types/article";
 import Image from "next/image";
@@ -10,7 +9,6 @@ import { FaBolt } from "react-icons/fa";
 
 export default function Home() {
   const [articles, setArticles] = useState<Article[]>([]);
-  
 
   useEffect(() => {
     const fetchArticles = async () => {
@@ -22,7 +20,7 @@ export default function Home() {
   }, []); // ✅ only once
 
   const published = articles.filter(
-    (article) => article.status === "published"
+    (article) => article.status === "published",
   );
 
   const mainArticle = published[0];
@@ -116,7 +114,6 @@ export default function Home() {
       <div className="w-full px-4">
         <Stories />
       </div>
-      
     </main>
   );
 }
