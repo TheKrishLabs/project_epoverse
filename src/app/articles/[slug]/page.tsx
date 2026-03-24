@@ -4,6 +4,8 @@ import ShareButtons from "../../../../components/ArticlesSlugePage/ShareButtons"
 import PopularPosts from "../../../../components/ArticlesSlugePage/PopularPosts";
 import { getArticleBySlug } from "@/services/articleService";
 import Comments from "@/components/ArticleSlugPage/Comments";
+import BookmarkButton from "@/components/ArticleSlugPage/BookmarkButton";
+import VotingPoll from "@/components/ArticleSlugPage/VotingPoll";
 
 export default async function ArticlePage({
   params,
@@ -49,8 +51,12 @@ export default async function ArticlePage({
             </span>
           </div>
 
-          {/* Share Buttons */}
-          <ShareButtons />
+          
+          {/* Share Buttons and bookmark */}
+<div className="flex items-center gap-4">
+  <ShareButtons />
+  <BookmarkButton postId={article._id} />
+</div>
 
           {/* Image */}
           <div className="relative w-full h-[420px] rounded-lg overflow-hidden mt-6 mb-8">
@@ -71,6 +77,7 @@ export default async function ArticlePage({
         {/* RIGHT SIDEBAR */}
         <div className="col-span-4">
           <PopularPosts />
+          <VotingPoll />
         </div>
       </div>
 

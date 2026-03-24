@@ -2,8 +2,10 @@
 
 import { useState, useEffect } from "react";
 import { X } from "lucide-react";
-import { FaFacebookF } from "react-icons/fa";
+import { FaFacebookF, FaEye, FaEyeSlash } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
+import { loginUser } from "@/services/login";
+import { useRouter } from "next/navigation";
 
 type Props = {
   isOpen: boolean;
@@ -11,9 +13,18 @@ type Props = {
 };
 
 export default function LoginModal({ isOpen, onClose }: Props) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+  const router = useRouter();
+
+  const [form, setForm] = useState({
+    email: "",
+    password: "",
+  });
+
+  const [errors, setErrors] = useState<{ email?: string; password?: string }>(
+    {}
+  );
+
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -29,50 +40,66 @@ export default function LoginModal({ isOpen, onClose }: Props) {
   const validate = () => {
     let newErrors: typeof errors = {};
 
-    if (!email) newErrors.email = "Email is required";
-    if (!password) newErrors.password = "Password is required";
+    if (!form.email) {
+      newErrors.email = "Email is required";
+    } else if (!/\S+@\S+\.\S+/.test(form.email)) {
+      newErrors.email = "Enter a valid email";
+    }
+
+    if (!form.password) {
+      newErrors.password = "Password is required";
+    } else if (form.password.length < 6) {
+      newErrors.password = "Password must be at least 6 characters";
+    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-//   const handleLogin = async () => {
-//     if (!validate()) return;
+  const handleChange = (e: any) => {
+    const { name, value } = e.target;
 
-//     try {
-//       setLoading(true);
+    setForm({
+      ...form,
+      [name]: value,
+    });
 
-//       const res = await fetch(
-//         "https://project-epoverse-backend.onrender.com/api/auth/login",
-//         {
-//           method: "POST",
-//           headers: { "Content-Type": "application/json" },
-//           body: JSON.stringify({ email, password }),
-//         }
-//       );
+    setErrors({
+      ...errors,
+      [name]: "",
+    });
+  };
 
-//       const data = await res.json();
+  const handleLogin = async () => {
+    if (!validate()) return;
 
-//       if (!res.ok) {
-//         alert(data.message || "Login failed");
-//         return;
-//       }
+    try {
+      setLoading(true);
 
-//       console.log("Login success:", data);
-//       alert("Login successful!");
-//       onClose();
-//     } catch (err) {
-//       console.error(err);
-//       alert("Something went wrong");
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
+      const data = await loginUser({
+        email: form.email,
+        password: form.password,
+      });
+
+      console.log("Login success:", data);
+
+      if (data?.user?.accessToken) {
+        localStorage.setItem("token", data.user.accessToken);
+      }
+
+      alert("Login successful!");
+      router.push("/");
+      onClose();
+    } catch (err: any) {
+      alert(err?.response?.data?.message || "Login failed");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
-      
-      {/* BLUR BACKGROUND */}
+      {/* BACKGROUND */}
       <div
         className="absolute inset-0 bg-black/50 backdrop-blur-sm"
         onClick={onClose}
@@ -81,26 +108,24 @@ export default function LoginModal({ isOpen, onClose }: Props) {
       {/* MODAL */}
       <div className="relative bg-white w-full max-w-md rounded-lg shadow-2xl p-8 z-10">
 
-        {/* CLOSE BUTTON */}
+        {/* CLOSE */}
         <button
           onClick={onClose}
-          className="absolute -top-4 -right-4 bg-red-500 text-white rounded-full p-2 hover:bg-red-600"
+          className="absolute -top-4 -right-4 bg-red-500 text-white rounded-full p-2"
         >
           <X size={16} />
         </button>
 
-        <h2 className="text-2xl font-semibold text-center mb-6">
-          Login
-        </h2>
+        <h2 className="text-2xl font-semibold text-center mb-6">Login</h2>
 
         {/* FACEBOOK */}
-        <button className="flex items-center justify-center gap-2 w-full bg-blue-600 text-white py-2 rounded mb-3 hover:bg-blue-700 transition">
+        <button className="flex items-center justify-center gap-2 w-full bg-blue-600 text-white py-2 rounded mb-3">
           <FaFacebookF />
           Connect with Facebook
         </button>
 
         {/* GOOGLE */}
-        <button className="flex items-center justify-center gap-2 w-full bg-gray-100 py-2 rounded mb-4 border hover:bg-gray-200 transition">
+        <button className="flex items-center justify-center gap-2 w-full bg-gray-100 py-2 rounded mb-4 border">
           <FcGoogle size={20} />
           Connect with Google
         </button>
@@ -111,29 +136,50 @@ export default function LoginModal({ isOpen, onClose }: Props) {
 
         {/* EMAIL */}
         <div className="mb-4">
+          <label className="block text-sm font-medium mb-1">
+            Email Address
+          </label>
+
           <input
+            name="email"
             type="email"
-            placeholder="Enter your email address"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Enter your email"
+            value={form.email}
+            onChange={handleChange}
             className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-400"
           />
+
           {errors.email && (
             <p className="text-red-500 text-sm mt-1">{errors.email}</p>
           )}
         </div>
 
         {/* PASSWORD */}
-        <div>
+        <div className="mb-2 relative">
+          <label className="block text-sm font-medium mb-1">
+            Password
+          </label>
+
           <input
-            type="password"
+            name="password"
+            type={showPassword ? "text" : "password"}
             placeholder="Enter your password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            value={form.password}
+            onChange={handleChange}
             className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-400"
           />
+
+          <span
+            className="absolute right-3 top-9 cursor-pointer"
+            onClick={() => setShowPassword(!showPassword)}
+          >
+            {showPassword ? <FaEyeSlash /> : <FaEye />}
+          </span>
+
           {errors.password && (
-            <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+            <p className="text-red-500 text-sm mt-1">
+              {errors.password}
+            </p>
           )}
         </div>
 
@@ -143,7 +189,7 @@ export default function LoginModal({ isOpen, onClose }: Props) {
 
         {/* LOGIN BUTTON */}
         <button
-          
+          onClick={handleLogin}
           disabled={loading}
           className="w-full bg-red-500 text-white py-2 rounded mt-6 hover:bg-red-600 transition disabled:opacity-50"
         >

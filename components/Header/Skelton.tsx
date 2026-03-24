@@ -1,3 +1,4 @@
+"use client";
 export default function SkeletonLoader() {
   return (
     <div className="grid grid-cols-4 gap-8 animate-pulse">

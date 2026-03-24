@@ -8,7 +8,6 @@ export const publicApi = axios.create({
 // PRIVATE API (token required)
 export const privateApi = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
-  withCredentials: true,
 });
 
 // REQUEST INTERCEPTOR (only for private API)

@@ -1,3 +1,4 @@
+"use client";
 interface Article {
   _id: string;
   headline: string;

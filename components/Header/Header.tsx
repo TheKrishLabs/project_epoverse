@@ -10,6 +10,7 @@ import {
   FaGlobe,
   FaClock,
 } from "react-icons/fa";
+import { LogOut } from 'lucide-react';
 import LoginModal from "../Login/LoginModal";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -195,6 +196,10 @@ const Header: React.FC<HeaderProps> = ({ categories }) => {
               <div className="bg-red-600 text-white p-2 rounded-full text-xs cursor-pointer">
                 <FaYoutube />
               </div>
+            </div>
+            {/* Logout */}
+            <div>
+              <LogOut/>
             </div>
           </div>
         </div>

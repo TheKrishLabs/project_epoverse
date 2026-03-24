@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { CiBookmark } from "react-icons/ci";
-import { Bookmark } from "lucide-react";
 import {
   saveBookmark,
   removeBookmark,
@@ -11,7 +10,7 @@ import {
 
 export default function BookmarkButton({ postId }: { postId: string }) {
   const [saved, setSaved] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [animate, setAnimate] = useState(false);
 
   useEffect(() => {
     checkBookmark();
@@ -20,7 +19,11 @@ export default function BookmarkButton({ postId }: { postId: string }) {
   const checkBookmark = async () => {
     try {
       const data = await getBookmarks();
-      const exists = data?.some((item: any) => item.postId?._id === postId);
+
+      const exists = data?.some(
+        (item: any) => item.postId?._id === postId
+      );
+     console.log(data)
       setSaved(exists);
     } catch (err) {
       console.log(err);
@@ -28,28 +31,21 @@ export default function BookmarkButton({ postId }: { postId: string }) {
   };
 
   const toggleBookmark = async () => {
-    if (loading) return;
-
-    setLoading(true);
-
-    // optimistic UI
-    const newState = !saved;
-    setSaved(newState);
-
     try {
-      if (newState) {
-        await saveBookmark(postId);
-      } else {
+      setAnimate(true);
+
+      if (saved) {
         await removeBookmark(postId);
+        setSaved(false);
+      } else {
+        await saveBookmark(postId);
+        setSaved(true);
       }
+
+      setTimeout(() => setAnimate(false), 200);
     } catch (err) {
       console.log(err);
-
-      // revert if API fails
-      setSaved(!newState);
     }
-
-    setLoading(false);
   };
 
   return (
@@ -57,13 +53,17 @@ export default function BookmarkButton({ postId }: { postId: string }) {
       onClick={toggleBookmark}
       className="flex items-center gap-2 px-4 py-2 mt-5 border rounded-lg hover:bg-gray-100 transition"
     >
-      {saved ? (
-        <Bookmark className="w-5 h-5 text-yellow-500 fill-yellow-500 transition-transform duration-200 scale-110" />
-      ) : (
-        <CiBookmark className="w-5 h-5 text-gray-600 transition-transform duration-200 hover:scale-110" />
-      )}
+      <CiBookmark
+        size={22}
+        className={`transition-all duration-200 
+        ${saved ? "text-yellow-500" : "text-gray-600"}
+        ${animate ? "scale-125" : "scale-100"}
+        `}
+      />
 
-      <span>{saved ? "Saved" : "Save"}</span>
+      <span className="text-sm">
+        {saved ? "Saved" : "Save"}
+      </span>
     </button>
   );
 }
