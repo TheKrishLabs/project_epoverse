@@ -1,7 +1,7 @@
 import { privateApi, publicApi } from "@/lib/axios";
 
 export const getStories = async () => {
-  const res = await publicApi.get("/story/public");
+  const res = await privateApi.get("/story/public");
   return res.data;
 };
 
@@ -11,7 +11,7 @@ export const getStoryItems = async (storyId: string) => {
 };
 
 export const trackStoryView = async (storyId: string, storyItemId: string) => {
-  await privateApi.post("/story/view", {
+  await publicApi.post("/story/view", {
     storyId,
     storyItemId,
   });

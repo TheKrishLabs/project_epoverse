@@ -1,11 +1,12 @@
 import Image from "next/image";
 import Breadcrumb from "../../../../components/ArticlesSlugePage/Breadcrumb";
 import ShareButtons from "../../../../components/ArticlesSlugePage/ShareButtons";
-import PopularPosts from "../../../../components/ArticlesSlugePage/PopularPosts";
 import { getArticleBySlug } from "@/services/articleService";
 import Comments from "@/components/ArticleSlugPage/Comments";
 import BookmarkButton from "@/components/ArticleSlugPage/BookmarkButton";
 import VotingPoll from "@/components/ArticleSlugPage/VotingPoll";
+import PopularPosts from "../../../../components/CategoryPage.tsx/PopularPosts";
+import TopWeek from "@/components/ArticleSlugPage/TopWeek";
 
 export default async function ArticlePage({
   params,
@@ -77,6 +78,7 @@ export default async function ArticlePage({
         {/* RIGHT SIDEBAR */}
         <div className="col-span-4">
           <PopularPosts />
+          <TopWeek/>
           <VotingPoll />
         </div>
       </div>

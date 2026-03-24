@@ -10,6 +10,7 @@ import {
   FaGlobe,
   FaClock,
 } from "react-icons/fa";
+import { CircleUser } from 'lucide-react';
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -210,6 +211,10 @@ const Header: React.FC<HeaderProps> = ({ categories = [] }) => {
             {/* Logout */}
             <div className="ml-10">
               <button onClick={logoutUser}><LogOut/></button>
+            </div>
+            {/* Logout */}
+            <div className="ml-10">
+             <Link href='/profile'> <button ><CircleUser/></button></Link>
             </div>
           </div>
         </div>

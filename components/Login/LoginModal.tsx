@@ -71,31 +71,34 @@ export default function LoginModal({ isOpen, onClose }: Props) {
   };
 
   const handleLogin = async () => {
-    if (!validate()) return;
+  if (!validate()) return;
 
-    try {
-      setLoading(true);
+  try {
+    setLoading(true);
 
-      const data = await loginUser({
-        email: form.email,
-        password: form.password,
-      });
+    const data = await loginUser({
+      email: form.email,
+      password: form.password,
+    });
 
-      console.log("Login success:", data);
+    console.log("Login success:", data);
 
-      if (data?.user?.accessToken) {
-        localStorage.setItem("token", data.user.accessToken);
-      }
-
-      alert("Login successful!");
-      router.push("/");
-      onClose();
-    } catch (err: any) {
-      alert(err?.response?.data?.message || "Login failed");
-    } finally {
-      setLoading(false);
+    // ✅ correct token store
+    if (data?.accessToken) {
+      localStorage.setItem("token", data.accessToken);
     }
-  };
+
+    alert("Login successful!");
+
+    router.push("/"); // redirect
+    onClose();
+
+  } catch (err: any) {
+    alert(err?.response?.data?.message || "Login failed");
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center px-4">

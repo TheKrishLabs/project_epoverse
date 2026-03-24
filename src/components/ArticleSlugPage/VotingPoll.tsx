@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getPolls } from "@/services/pollService";
+import { changeVote, createVote, getPolls } from "@/services/pollService";
 import { useRouter } from "next/navigation";
 
 type Option = {
@@ -19,7 +19,9 @@ type Poll = {
 export default function VotingPoll() {
   const [poll, setPoll] = useState<Poll | null>(null);
   const [showResults, setShowResults] = useState(false);
-  const [selected, setSelected] = useState(""); // ✅ added
+  const [selected, setSelected] = useState(""); // ✅ added 
+  const [voting, setVoting] = useState(false);
+const [hasVoted, setHasVoted] = useState(false);
 
   const router = useRouter();
 
@@ -28,14 +30,26 @@ export default function VotingPoll() {
   }, []);
 
   const fetchPoll = async () => {
-    try {
-      const data = await getPolls();
-      setPoll(data.polls[0]);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  try {
+    const data = await getPolls();
 
+    const currentPoll = data.polls[0];
+
+    setPoll(currentPoll);
+
+    // ✅ detect previous vote
+    if (currentPoll.myVote) {
+      setSelected(
+        currentPoll.myVote.optionId
+      );
+
+      setHasVoted(true);
+    }
+
+  } catch (err) {
+    console.error(err);
+  }
+};
   if (!poll) return null;
 
   const totalVotes = poll.options.reduce(
@@ -44,6 +58,47 @@ export default function VotingPoll() {
   );
 
   const maxVotes = Math.max(...poll.options.map((o) => o.votes));
+
+  // post & change vote 
+  const handleOptionSelect = async (optionId: string) => {
+  try {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      router.push("/login");
+      return;
+    }
+
+    if (!poll) return;
+
+    setSelected(optionId);
+
+    if (!hasVoted) {
+      // ✅ FIRST TIME → CREATE VOTE 
+      setVoting(true);
+      await createVote(poll._id, optionId);
+      setVoting(false);
+      setHasVoted(true);
+
+      console.log("Vote created");
+
+    } else {
+      // ✅ OPTION CHANGED → CHANGE VOTE
+      await changeVote(poll._id, optionId);
+
+      console.log("Vote changed");
+    }
+
+    // Refresh poll results
+    await fetchPoll();
+
+    setShowResults(true);
+
+  } catch (err) {
+    console.error(err);
+    alert("Vote error");
+  }
+};
 
   return (
     <div className="border rounded-lg p-4 shadow-sm bg-white">
@@ -76,13 +131,13 @@ export default function VotingPoll() {
               <div className="flex items-center gap-4">
                 {/* ✅ show radio only before results */}
                 {!showResults && (
-                  <input
-                    type="radio"
-                    name="vote"
-                    value={opt._id}
-                    checked={selected === opt._id}
-                    onChange={() => setSelected(opt._id)}
-                  />
+                  <input disabled={voting}
+  type="radio"
+  name="vote"
+  value={opt._id}
+  checked={selected === opt._id}
+  onChange={() => handleOptionSelect(opt._id)}
+/>
                 )}
 
                 <p className="mb-1">{opt.text}</p>

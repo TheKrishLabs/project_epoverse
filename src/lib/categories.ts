@@ -1,4 +1,4 @@
-// src/lib/api.ts
+import { publicApi } from "@/lib/axios";
 
 export interface Category {
   _id: string;
@@ -11,16 +11,20 @@ export interface Category {
 }
 
 export async function getCategories(): Promise<Category[]> {
-  const res = await fetch(
-    "https://project-epoverse-backend.onrender.com/api/categories",
-    {
-      next: { revalidate: 600 }, // cache 10 minutes
-    }
-  );
 
-  if (!res.ok) {
-    throw new Error("Failed to fetch categories");
+  try {
+
+    const res = await publicApi.get(
+      "/categories"
+    );
+
+    return res.data;
+
+  } catch (error) {
+
+    console.error("Fetch categories error:", error);
+    throw error;
+
   }
 
-  return res.json();
 }
