@@ -9,18 +9,24 @@ import {
   getBookmarks,
 } from "@/services/bookmarkService";
 
-export default function BookmarkButton({ postId }: { postId: string }) {
+export default function BookmarkButton({
+  params,
+}: {
+  params: { postId: string };
+}) {
   const [saved, setSaved] = useState(false);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     checkBookmark();
-  }, [postId]);
+  }, [params.postId]);
 
   const checkBookmark = async () => {
     try {
       const data = await getBookmarks();
-      const exists = data?.some((item: any) => item.postId?._id === postId);
+      const exists = data?.some(
+        (item: any) => item?.postId?._id === params.postId,
+      );
       setSaved(exists);
     } catch (err) {
       console.log(err);
@@ -38,9 +44,9 @@ export default function BookmarkButton({ postId }: { postId: string }) {
 
     try {
       if (newState) {
-        await saveBookmark(postId);
+        await saveBookmark(params.postId);
       } else {
-        await removeBookmark(postId);
+        await removeBookmark(params.postId);
       }
     } catch (err) {
       console.log(err);
