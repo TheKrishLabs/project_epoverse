@@ -22,11 +22,6 @@ import { Article } from "@/types/article";
 import LoginModal from "../../../components/Login/LoginModal";
 import { LogOut } from "lucide-react";
 
-interface Category {
-  _id: string;
-  name: string;
-}
-
 interface HeaderProps {
   categories: any[];
 }
@@ -123,16 +118,16 @@ const Header: React.FC<HeaderProps> = ({ categories = [] }) => {
       }
     }, 200);
   };
-  //LogOut User 
+  //LogOut User
 
-  const logoutUser=()=>{
-    const token=localStorage.getItem('token')
-    console.log(token)
-    if(token){
-      alert('Are you sure want to logout')
-      localStorage.removeItem('token')
+  const logoutUser = () => {
+    const token = localStorage.getItem("token");
+    console.log(token);
+    if (token) {
+      alert("Are you sure want to logout");
+      localStorage.removeItem("token");
     }
-  }
+  };
   return (
     <>
       {/* ================= TOP BAR ================= */}
@@ -210,7 +205,9 @@ const Header: React.FC<HeaderProps> = ({ categories = [] }) => {
 
             {/* Logout */}
             <div className="ml-10">
-              <button onClick={logoutUser}><LogOut/></button>
+              <button onClick={logoutUser}>
+                <LogOut />
+              </button>
             </div>
             {/* Logout */}
             <div className="ml-10">

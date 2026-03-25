@@ -21,7 +21,7 @@ export default function LoginModal({ isOpen, onClose }: Props) {
   });
 
   const [errors, setErrors] = useState<{ email?: string; password?: string }>(
-    {}
+    {},
   );
 
   const [showPassword, setShowPassword] = useState(false);
@@ -110,7 +110,6 @@ export default function LoginModal({ isOpen, onClose }: Props) {
 
       {/* MODAL */}
       <div className="relative bg-white w-full max-w-md rounded-lg shadow-2xl p-8 z-10">
-
         {/* CLOSE */}
         <button
           onClick={onClose}
@@ -134,7 +133,8 @@ export default function LoginModal({ isOpen, onClose }: Props) {
         </button>
 
         <p className="text-sm text-center mb-6">
-          Or <span className="underline cursor-pointer">register with email</span>
+          Or{" "}
+          <span className="underline cursor-pointer">register with email</span>
         </p>
 
         {/* EMAIL */}
@@ -159,9 +159,7 @@ export default function LoginModal({ isOpen, onClose }: Props) {
 
         {/* PASSWORD */}
         <div className="mb-2 relative">
-          <label className="block text-sm font-medium mb-1">
-            Password
-          </label>
+          <label className="block text-sm font-medium mb-1">Password</label>
 
           <input
             name="password"
@@ -180,9 +178,7 @@ export default function LoginModal({ isOpen, onClose }: Props) {
           </span>
 
           {errors.password && (
-            <p className="text-red-500 text-sm mt-1">
-              {errors.password}
-            </p>
+            <p className="text-red-500 text-sm mt-1">{errors.password}</p>
           )}
         </div>
 
