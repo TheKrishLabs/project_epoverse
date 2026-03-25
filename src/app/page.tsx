@@ -6,6 +6,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { FaBolt } from "react-icons/fa";
+import TopWeek from "@/components/ArticleSlugPage/TopWeek";
+import PopularPosts from "../../components/CategoryPage.tsx/PopularPosts";
 
 export default function Home() {
   const [articles, setArticles] = useState<Article[]>([]);
@@ -82,7 +84,17 @@ export default function Home() {
               </Link>
             </div>
           ))}
+          {/* Popular */}
+<div className="col-span-4">
+  <PopularPosts />
+</div>
+
+{/* Top Week */}
+<div className="col-span-4 mt-8">
+  <TopWeek />
+</div>
         </div>
+        
       </div>
 
       {/* BOTTOM GRID SECTION */}

@@ -4,17 +4,30 @@ import { useState, useEffect } from "react";
 import { getBookmarks, removeBookmark } from "@/services/bookmarkService";
 import Link from "next/link";
 import { BookmarkX } from "lucide-react";
-
+import { getProfileDetails } from "@/services/profile";
 
 export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState("bookmarks");
   const [bookmarks, setBookmarks] = useState([]);
 
-  // 🔹 Dummy user (replace with API later)
-  const user = {
-    name: "Ram",
-    email: "ram@gmail.com",
-  };
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (!token) return;
+
+    const details = async () => {
+      try {
+        const res = await getProfileDetails();
+        setUser(res.profile);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    details();
+  }, []);
 
   useEffect(() => {
     if (activeTab === "bookmarks") {
@@ -36,7 +49,7 @@ export default function ProfilePage() {
       await removeBookmark(postId);
 
       setBookmarks((prev: any) =>
-        prev.filter((item: any) => item.postId._id !== postId)
+        prev.filter((item: any) => item.postId._id !== postId),
       );
 
       alert("Removed from bookmarks");
@@ -50,12 +63,12 @@ export default function ProfilePage() {
       {/* 👤 PROFILE HEADER */}
       <div className="flex items-center gap-6 border-b pb-6">
         <div className="w-20 h-20 rounded-full bg-gray-300 flex items-center justify-center text-2xl font-bold">
-          {user.name[0]}
+          {user?.fullName[0]}
         </div>
 
         <div>
-          <h1 className="text-2xl font-bold">{user.name}</h1>
-          <p className="text-gray-500">{user.email}</p>
+          <h1 className="text-2xl font-bold">{user?.fullName || 'username'}</h1>
+          <p className="text-gray-500">{user?.email || 'email'}</p>
         </div>
       </div>
 
@@ -122,8 +135,7 @@ export default function ProfilePage() {
                         </Link>
 
                         <p className="text-sm text-gray-500 mt-1">
-                          Saved on{" "}
-                          {new Date(item.createdAt).toDateString()}
+                          Saved on {new Date(item.createdAt).toDateString()}
                         </p>
 
                         <button
