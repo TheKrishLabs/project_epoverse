@@ -1,12 +1,17 @@
 import { Article } from "@/types/article";
 import Link from "next/link";
 
-export default function MegaContent({ articles }: { articles: Article[] }) {
+export default function MegaContent({
+  articles,
+  closeMenu,
+}: {
+  articles: Article[];
+  closeMenu: () => void;
+}) {
   if (!articles?.length)
     return (
       <div className="text-center py-10 text-gray-400">No articles found</div>
     );
-  console.log("list of artilce", articles);
 
   return (
     <div className="grid grid-cols-4 gap-8">
@@ -15,6 +20,7 @@ export default function MegaContent({ articles }: { articles: Article[] }) {
           key={item._id}
           href={`/articles/${item.slug}`}
           className="group cursor-pointer block"
+          onClick={closeMenu}
         >
           <div className="overflow-hidden rounded-lg">
             <img

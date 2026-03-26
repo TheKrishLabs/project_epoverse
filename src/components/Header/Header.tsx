@@ -10,7 +10,7 @@ import {
   FaGlobe,
   FaClock,
 } from "react-icons/fa";
-import { CircleUser } from 'lucide-react';
+import { CircleUser } from "lucide-react";
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -74,6 +74,7 @@ const Header: React.FC<HeaderProps> = ({ categories = [] }) => {
   }, []);
 
   const handleCategoryClick = (id: string) => {
+    setHoveredCat(null);
     router.push(`/category/${id}`);
   };
 
@@ -211,7 +212,12 @@ const Header: React.FC<HeaderProps> = ({ categories = [] }) => {
             </div>
             {/* Logout */}
             <div className="ml-10">
-             <Link href='/profile'> <button ><CircleUser/></button></Link>
+              <Link href="/profile">
+                {" "}
+                <button>
+                  <CircleUser />
+                </button>
+              </Link>
             </div>
           </div>
         </div>
@@ -289,7 +295,10 @@ const Header: React.FC<HeaderProps> = ({ categories = [] }) => {
               {loading ? (
                 <SkeletonLoader />
               ) : (
-                <MegaContent articles={articles} />
+                <MegaContent
+                  articles={articles}
+                  closeMenu={() => setHoveredCat(null)}
+                />
               )}
             </div>
           </div>

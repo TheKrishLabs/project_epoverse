@@ -35,7 +35,7 @@ export default async function CategoryPage({
         {/* Sidebar */}
         <div className="col-span-3">
           <PopularPosts />
-          <TopWeek/>
+          <TopWeek />
         </div>
       </div>
     </div>
