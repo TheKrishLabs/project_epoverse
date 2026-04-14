@@ -39,8 +39,7 @@ export default function Comments({ articleId }: { articleId: string }) {
       });
 
       setContent("");
-
-      alert("Comment posted successfully!");
+      await fetchComments();
     } catch (error) {
       console.error(error);
       alert("Failed to post comment. Please try again.");
