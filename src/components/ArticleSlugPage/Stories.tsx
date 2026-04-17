@@ -74,14 +74,14 @@ export default function Stories({ onOpen }: any) {
         <div className="flex gap-2">
           <button
             onClick={() => scroll("left")}
-            className="w-8 h-8 flex items-center justify-center bg-gray-200 rounded shadow hover:bg-gray-300 transition"
+            className="w-8 h-8 flex items-center justify-center bg-gray-200 text-gray-800 dark:bg-gray-800 dark:text-gray-200 rounded shadow hover:bg-gray-300 dark:hover:bg-gray-700 transition"
           >
             <ChevronLeft size={18} />
           </button>
 
           <button
             onClick={() => scroll("right")}
-            className="w-8 h-8 flex items-center justify-center bg-gray-200 rounded shadow hover:bg-gray-300 transition"
+            className="w-8 h-8 flex items-center justify-center bg-gray-200 text-gray-800 dark:bg-gray-800 dark:text-gray-200 rounded shadow hover:bg-gray-300 dark:hover:bg-gray-700 transition"
           >
             <ChevronRight size={18} />
           </button>

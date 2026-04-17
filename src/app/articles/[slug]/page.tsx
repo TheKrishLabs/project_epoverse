@@ -33,14 +33,14 @@ export default async function ArticlePage({
       {/* Breadcrumb */}
       <Breadcrumb category={article.category?.name} title={article.headline} />
 
-      <div className="grid grid-cols-12 gap-10">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10">
         {/* LEFT ARTICLE CONTENT */}
-        <div className="col-span-8">
+        <div className="lg:col-span-8">
           <p className="text-red-500 font-semibold mb-2">
             {article.category?.name}
           </p>
 
-          <h1 className="text-4xl font-bold leading-snug mb-4 dark:text-gray-100">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold leading-snug mb-4 dark:text-gray-100">
             {article.headline}
           </h1>
 
@@ -62,7 +62,7 @@ export default async function ArticlePage({
 </div>
 
           {/* Image */}
-          <div className="relative w-full h-[420px] rounded-lg overflow-hidden mt-6 mb-8">
+          <div className="relative w-full h-[250px] sm:h-[350px] md:h-[420px] rounded-lg overflow-hidden mt-6 mb-8">
             <Image
               src={imageSrc}
               alt={article.headline}
@@ -77,7 +77,7 @@ export default async function ArticlePage({
         </div>
 
         {/* RIGHT SIDEBAR */}
-        <div className="col-span-4 space-y-8">
+        <div className="lg:col-span-4 space-y-8 mt-8 lg:mt-0">
           <PopularPosts />
           <TopWeek/>
           <VotingPoll />

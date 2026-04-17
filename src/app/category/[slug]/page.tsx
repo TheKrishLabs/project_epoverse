@@ -22,10 +22,10 @@ export default async function CategoryPage({
         CATEGORY
       </h1>
 
-      <div className="grid grid-cols-12 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
         {/* Articles Section */}
-        <div className="col-span-9">
-          <div className="grid grid-cols-3 gap-6">
+        <div className="lg:col-span-8 xl:col-span-9">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {articles.map((item) => (
               <ArticleCard key={item._id} {...item} />
             ))}
@@ -33,7 +33,7 @@ export default async function CategoryPage({
         </div>
 
         {/* Sidebar */}
-        <div className="col-span-3">
+        <div className="lg:col-span-4 xl:col-span-3 space-y-8 mt-8 lg:mt-0">
           <PopularPosts />
           <TopWeek />
         </div>
