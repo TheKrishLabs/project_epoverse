@@ -9,6 +9,8 @@ import {
   FaSun,
   FaGlobe,
   FaClock,
+  FaBars,
+  FaTimes,
 } from "react-icons/fa";
 import { CircleUser } from "lucide-react";
 
@@ -29,36 +31,33 @@ interface HeaderProps {
   categories: any[];
 }
 
-const Header= () => {
+const Header = () => {
   const router = useRouter();
   const [isLangOpen, setIsLangOpen] = useState(false);
   const [selectedLang, setSelectedLang] = useState("English");
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const navRef = useRef<HTMLDivElement>(null);
 
-  // ===== MEGA MENU STATES =====
   const [hoveredCat, setHoveredCat] = useState<string | null>(null);
   const [articles, setArticles] = useState<Article[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
 
-  // Cache store
   const cacheRef = useRef<Record<string, Article[]>>({});
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    // fetch categories for navbar
     const fetchCategories = async () => {
       try {
         const cats: Category[] = await getCategories();
-        console.log("Fetched categories:", cats);
         setCategories(cats);
       } catch (err) {
         console.error("Failed to fetch categories:", err);
       }
-    }
+    };
     fetchCategories();
     const token = localStorage.getItem("token");
     if (token) {
@@ -66,7 +65,6 @@ const Header= () => {
     }
   }, []);
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOuside = (event: MouseEvent) => {
       if (
@@ -98,10 +96,10 @@ const Header= () => {
 
   const handleCategoryClick = (slug: string) => {
     setHoveredCat(null);
+    setMobileMenuOpen(false);
     router.push(`/category/${slug}`);
   };
 
-  // Date
   const today: Date = new Date();
 
   const formattedDate: string = today.toLocaleDateString("en-GB", {
@@ -115,14 +113,13 @@ const Header= () => {
     setSelectedLang(lang);
     setIsLangOpen(false);
   };
-  // hover
+
   const handleHover = (categoryId: string) => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
 
     timeoutRef.current = setTimeout(async () => {
       setHoveredCat(categoryId);
 
-      // ✅ If cached
       if (cacheRef.current[categoryId]) {
         setArticles(cacheRef.current[categoryId]);
         return;
@@ -142,7 +139,6 @@ const Header= () => {
       }
     }, 200);
   };
-  //LogOut User
 
   const logoutUser = () => {
     const token = localStorage.getItem("token");
@@ -153,35 +149,38 @@ const Header= () => {
       router.push("/");
     }
   };
+
   return (
     <>
       {/* ================= TOP BAR ================= */}
       <div className="bg-gray-100 border-b text-sm dark:bg-gray-900 dark:border-gray-700">
-        <div className="w-full flex items-center justify-between py-2 px-12">
+        <div className="w-full flex items-center justify-between py-2 px-4 md:px-12">
           {/* Left - Date */}
-          <div className="flex items-center gap-2 text-gray-600 dark:text-gray-300">
+          <div className="hidden sm:flex items-center gap-2 text-gray-600 dark:text-gray-300">
             <FaClock className="text-gray-500 text-xs" />
             <span>{formattedDate}</span>
           </div>
 
           {/* Right */}
-          <div className="flex items-center gap-4 text-gray-700 dark:text-gray-300">
-            {!isLoggedIn && (<>
-             <button
-              onClick={() => setIsLoginOpen(true)}
-              className="hover:text-black"
-            >
-              Login
-            </button>
-            <span>|</span>
-            <Link href="/registration" className="hover:text-black">
-              Registration
-            </Link>
-            </>)}
+          <div className="flex items-center gap-3 md:gap-4 text-gray-700 dark:text-gray-300 flex-wrap">
+            {!isLoggedIn && (
+              <>
+                <button
+                  onClick={() => setIsLoginOpen(true)}
+                  className="hover:text-red-500 dark:hover:text-red-400 transition-colors"
+                >
+                  Login
+                </button>
+                <span>|</span>
+                <Link href="/registration" className="hover:text-red-500 dark:hover:text-red-400 transition-colors">
+                  Registration
+                </Link>
+              </>
+            )}
 
-            <ThemeToggle /> 
+            <ThemeToggle />
+
             {/* Language */}
-
             <div className="relative" ref={dropdownRef}>
               <div
                 onClick={() => setIsLangOpen(!isLangOpen)}
@@ -210,7 +209,7 @@ const Header= () => {
             </div>
 
             {/* Social Icons */}
-            <div className="flex items-center gap-2 ml-2">
+            <div className="hidden md:flex items-center gap-2 ml-2">
               <div className="bg-blue-600 text-white p-2 rounded-full text-xs cursor-pointer">
                 <FaFacebookF />
               </div>
@@ -226,44 +225,48 @@ const Header= () => {
             </div>
             {isLoggedIn && (
               <>
-              <div className="ml-10">
-              <button onClick={logoutUser}>
-                <LogOut />
-              </button>
-            </div>
-            <div className="ml-10">
-              <Link href="/profile">
-                {" "}
-                <button>
-                  <CircleUser />
-                </button>
-              </Link>
-            </div>
-            </>
+                <div className="ml-2 md:ml-10">
+                  <button onClick={logoutUser}>
+                    <LogOut />
+                  </button>
+                </div>
+                <div className="ml-2 md:ml-10">
+                  <Link href="/profile">
+                    {" "}
+                    <button>
+                      <CircleUser />
+                    </button>
+                  </Link>
+                </div>
+              </>
             )}
-
-            
-
           </div>
         </div>
       </div>
 
       {/* ================= LOGO + AD SECTION ================= */}
       <div className="bg-white dark:bg-gray-900">
-        <div className="w-full flex items-center justify-between py-3 px-10">
+        <div className="w-full flex items-center justify-between py-3 px-4 md:px-10">
           {/* Logo */}
           <Link
             href="/"
-            className="text-4xl font-bold flex items-center transition-transform hover:scale-105 duration-300"
+            className="text-2xl md:text-4xl font-bold flex items-center transition-transform hover:scale-105 duration-300"
           >
             <span className="text-black dark:text-white">Epo</span>
             <span className="text-red-600 drop-shadow-sm">Verse.</span>
           </Link>
 
           {/* Ad Banner */}
-          <div className="bg-gray-300 w-[771px] h-[90px] flex items-center justify-center text-gray-500 text-2xl font-semibold dark:bg-gray-800 dark:text-gray-400">
+          <div className="hidden lg:flex bg-gray-300 w-[771px] h-[90px] items-center justify-center text-gray-500 text-2xl font-semibold dark:bg-gray-800 dark:text-gray-400">
             Banner
           </div>
+
+          <button
+            className="lg:hidden text-2xl text-gray-700 dark:text-gray-200 p-2"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          >
+            {mobileMenuOpen ? <FaTimes /> : <FaBars />}
+          </button>
         </div>
       </div>
 
@@ -280,8 +283,8 @@ const Header= () => {
         }}
         className="sticky top-0 z-50 bg-black relative"
       >
-        <div className="w-full flex items-center justify-around">
-          <ul className="flex items-center gap-8 text-white text-sm font-semibold py-4 ">
+        <div className="w-full hidden lg:flex items-center justify-around">
+          <ul className="flex items-center gap-8 text-white text-sm font-semibold py-4">
             <Link href="/" className="relative group cursor-pointer block">
               <span className="group-hover:text-red-500">HOME</span>
               <span className="absolute left-0 -bottom-1 w-0 h-[2px] bg-red-500 group-hover:w-full transition-all duration-300"></span>
@@ -313,10 +316,50 @@ const Header= () => {
           </div>
         </div>
 
+        {mobileMenuOpen && (
+          <div className="lg:hidden bg-black border-t border-gray-800">
+            <ul className="flex flex-col text-white text-sm font-semibold">
+              <Link
+                href="/"
+                className="px-6 py-3 border-b border-gray-800 hover:bg-gray-900 transition-colors"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                HOME
+              </Link>
+
+              {categories.map((cat) => (
+                <li
+                  key={cat._id}
+                  onClick={() => handleCategoryClick(cat.slug)}
+                  className="px-6 py-3 border-b border-gray-800 hover:bg-gray-900 cursor-pointer flex items-center justify-between transition-colors"
+                >
+                  {cat.name.toUpperCase()}
+                  <IoIosArrowForward />
+                </li>
+              ))}
+            </ul>
+
+            <div className="flex items-center gap-3 px-6 py-4 border-t border-gray-800">
+              <div className="bg-blue-600 text-white p-2 rounded-full text-xs cursor-pointer">
+                <FaFacebookF />
+              </div>
+              <div className="bg-sky-400 text-white p-2 rounded-full text-xs cursor-pointer">
+                <FaTwitter />
+              </div>
+              <div className="bg-pink-500 text-white p-2 rounded-full text-xs cursor-pointer">
+                <FaInstagram />
+              </div>
+              <div className="bg-red-600 text-white p-2 rounded-full text-xs cursor-pointer">
+                <FaYoutube />
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* GLOBAL DROPDOWN */}
         {hoveredCat && (
           <div className="absolute left-0 top-full w-full bg-white shadow-2xl animate-fadeIn dark:bg-gray-900 dark:text-white">
-            <div className="max-w-[1200px] mx-auto p-8">
+            <div className="max-w-[1200px] mx-auto p-4 md:p-8">
               {loading ? (
                 <SkeletonLoader />
               ) : (

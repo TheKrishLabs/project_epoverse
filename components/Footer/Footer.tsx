@@ -41,7 +41,7 @@ const scrollToTop = () => {
       <div className="relative max-w-[1300px] mx-auto px-6 py-14">
 
         {/* Top Logo + Social */}
-        <div className="flex justify-between items-center mb-10">
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-6 mb-10">
           <h2 className="text-4xl font-bold">
             <span className="text-white">Epo</span>
             <span className="text-red-500">Verse.</span>
@@ -64,7 +64,7 @@ const scrollToTop = () => {
         <hr className="border-gray-700 mb-10" />
 
         {/* Grid Section */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
 
           {/* About Us */}
           <div className="space-y-6 md:border-r md:border-gray-700 md:pr-8">
@@ -135,8 +135,8 @@ const scrollToTop = () => {
         </div>
 
         {/* Bottom Strip */}
-        <div className="border-t border-gray-700 mt-12 pt-6 flex justify-between text-sm text-gray-400">
-          <p>Designed and Developed By krishlabs</p>
+        <div className="border-t border-gray-700 mt-12 pt-6 flex flex-col sm:flex-row items-center justify-between text-sm text-gray-400 gap-4">
+          <p className="text-center sm:text-left">Designed and Developed By krishlabs</p>
           <p>Business</p>
         </div>
       </div>
