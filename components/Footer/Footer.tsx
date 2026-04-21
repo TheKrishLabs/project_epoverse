@@ -14,10 +14,11 @@ import {
   FaTimes,
 } from "react-icons/fa";
 import { getCategories } from "@/services/categoryService";
+import { Category } from "@/types/category";
 
 export default function Footer() {
   const [showButton, setShowButton] = useState(false);
-  const [categories, setCategories] = useState<{ _id: string; slug: string; name: string }[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [showPrivacyModal, setShowPrivacyModal] = useState(false);
   const [showTermsModal, setShowTermsModal] = useState(false);
 
@@ -110,7 +111,7 @@ export default function Footer() {
                 {categories.map((cat) => (
                   <Link
                     key={cat._id}
-                    href={`/category/${cat.slug}`}
+                    href={`/category/${cat.name.toLowerCase().replace(/\s+/g, '-')}`}
                     className="hover:text-[#e43f3e] dark:hover:text-[#e43f3e] transition-all duration-300 hover:translate-x-1 cursor-pointer capitalize w-fit"
                   >
                     {cat.name}
