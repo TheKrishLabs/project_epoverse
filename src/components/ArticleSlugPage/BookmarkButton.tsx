@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { CiBookmark } from "react-icons/ci";
 import { FaBookmark } from "react-icons/fa";
+import { useToast } from "@/components/ui/ToastProvider";
+import { useRouter, usePathname } from "next/navigation";
 import {
   saveBookmark,
   removeBookmark,
@@ -10,6 +12,9 @@ import {
 } from "@/services/bookmarkService";
 
 export default function BookmarkButton({ postId }: { postId: string }) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const { showLoginPrompt, showToast } = useToast();
   const [saved, setSaved] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -32,6 +37,16 @@ export default function BookmarkButton({ postId }: { postId: string }) {
 
   const toggleBookmark = async () => {
     if (loading) return;
+
+    const token = localStorage.getItem("token");
+    if (!token) {
+      showLoginPrompt({
+        message: "Please login to save articles.",
+        onLogin: () => router.push(`/login?redirect=${encodeURIComponent(pathname)}`),
+      });
+      return;
+    }
+
     try {
       setLoading(true);
 

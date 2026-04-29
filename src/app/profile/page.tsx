@@ -6,11 +6,14 @@ import Link from "next/link";
 import { BookmarkX } from "lucide-react";
 import { getProfileDetails, updateProfileDetails } from "@/services/profile";
 import { useToast } from "@/components/ui/ToastProvider";
+import { useRouter, usePathname } from "next/navigation";
 
 export default function ProfilePage() {
+  const router = useRouter();
+  const pathname = usePathname();
   const [activeTab, setActiveTab] = useState("bookmarks");
   const [bookmarks, setBookmarks] = useState([]);
-  const { showToast } = useToast();
+  const { showToast, showLoginPrompt } = useToast();
 
   const [user, setUser] = useState<any>(null);
 
@@ -25,7 +28,16 @@ export default function ProfilePage() {
     };
     const token = localStorage.getItem("token");
 
-    if (token) details();
+    if (!token) {
+      router.push("/");
+      showLoginPrompt({
+        message: "Please login to view your profile.",
+        onLogin: () => router.push(`/login?redirect=${encodeURIComponent(pathname)}`),
+      });
+      return;
+    }
+
+    details();
   }, []);
 
   useEffect(() => {
@@ -58,9 +70,22 @@ export default function ProfilePage() {
   };
 
   const updateProfile = async () => {
-    showToast("Profile update coming soon...", "info");
-    const updatedUser = await updateProfileDetails(user);
-    setUser(updatedUser.user);
+    const token = localStorage.getItem("token");
+    if (!token) {
+      showLoginPrompt({
+        message: "Please login to update your profile.",
+        onLogin: () => router.push(`/login?redirect=${encodeURIComponent(pathname)}`),
+      });
+      return;
+    }
+
+    try {
+      showToast("Profile update coming soon...", "info");
+      const updatedUser = await updateProfileDetails(user);
+      setUser(updatedUser.user);
+    } catch (error) {
+      showToast("Failed to update profile", "error");
+    }
   }
 
   return (
