@@ -100,7 +100,7 @@ const Header = () => {
   const handleCategoryClick = (slug: string) => {
     setHoveredCat(null);
     setMobileMenuOpen(false);
-    router.push(`/category/${slug}`);
+    router.push(`/${slug}`);
   };
 
   const today: Date = new Date();

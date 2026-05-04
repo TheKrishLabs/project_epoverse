@@ -8,10 +8,12 @@ import {
   removeBookmark,
   getBookmarks,
 } from "@/services/bookmarkService";
+import { useToast } from "@/components/ui/ToastProvider";
 
 export default function BookmarkButton({ postId }: { postId: string }) {
   const [saved, setSaved] = useState(false);
   const [loading, setLoading] = useState(false);
+  const { showLoginPrompt } = useToast();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -32,6 +34,16 @@ export default function BookmarkButton({ postId }: { postId: string }) {
 
   const toggleBookmark = async () => {
     if (loading) return;
+
+    const token = localStorage.getItem("token");
+    if (!token) {
+      showLoginPrompt({
+        message: "Please log in to save articles for later.",
+        onLogin: () => { window.location.href = "/login"; },
+      });
+      return;
+    }
+
     try {
       setLoading(true);
 
