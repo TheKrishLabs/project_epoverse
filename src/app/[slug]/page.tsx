@@ -1,8 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import { FaUser, FaClock, FaBolt } from "react-icons/fa";
-import Breadcrumb from "../../../../components/CategoryPage.tsx/Breadcrumb";
-import PopularPosts from "../../../../components/CategoryPage.tsx/PopularPosts";
+import Breadcrumb from "../../../components/CategoryPage.tsx/Breadcrumb";
+import PopularPosts from "../../../components/CategoryPage.tsx/PopularPosts";
 import TopWeek from "@/components/ArticleSlugPage/TopWeek";
 import AdSpace from "@/components/Sidebar/AdSpace";
 import { fetchArticlesByCategorySlug } from "@/services/articleService";
@@ -26,7 +26,7 @@ export default async function CategoryPage({
 }) {
   const articles: Article[] = await fetchArticlesByCategorySlug(params.slug);
   const publishedArticles = articles.filter((a) => a.status === "published");
-  
+
   const categoryName = params.slug.replace(/-/g, ' ');
 
   const heroArticle = publishedArticles[0];
@@ -49,16 +49,16 @@ export default async function CategoryPage({
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
         {/* Main Content Area */}
         <div className="lg:col-span-8 flex flex-col gap-10">
-          
+
           {/* Hero Article */}
           {heroArticle && (
             <div className="relative w-full h-[400px] md:h-[500px] group rounded-sm overflow-hidden shadow-sm border border-gray-100 dark:border-gray-800">
               <Link href={`/articles/${heroArticle.slug}`} className="block w-full h-full">
-                <Image 
-                  src={heroArticle.image || heroArticle.thumbnail || ""} 
-                  alt={heroArticle.headline} 
-                  fill 
-                  className="object-cover group-hover:scale-105 transition-transform duration-700" 
+                <Image
+                  src={heroArticle.image || heroArticle.thumbnail || ""}
+                  alt={heroArticle.headline}
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-700"
                   priority
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent" />
